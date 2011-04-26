@@ -239,7 +239,7 @@ class gbrowseImage {
 			        break;
 			    case "Nterminus":
 			    	// we have to turn flip on/off explicitly in the parameters.
-			    	// GBrowse allows low->high coordinates to be on the minus strand.
+			    	// Gbrowse allows low->high coordinates to be on the minus strand.
 			    	// i.e. ( high->low != 'minus strand' )
 			    	$this->query['name'] = $this->name;
 			    	$this->query['type'] = 'Gene+DNA_+Protein';
