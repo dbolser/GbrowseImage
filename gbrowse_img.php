@@ -54,10 +54,11 @@ class gbrowseImage {
 	const PADDING_LENGTH = 1000;
 
 	// where the gbrowse_img script lives on the web
-    const GBROWSE_IMG = 'http://heptamer.tamu.edu/cgi-bin/gb2/gbrowse_img';
+	const GBROWSE_IMG = 'http://trimer.tamu.edu/cgi-bin/gbrowse_img';
 
 	// where gbrowse lives
-    const GBROWSE = 'http://heptamer.tamu.edu/cgi-bin/gb2/gbrowse';
+	const GBROWSE = 'http://trimer.tamu.edu/cgi-bin/gbrowse';
+
 
 
 	var $input;						// stuff between the tags
@@ -252,6 +253,63 @@ class gbrowseImage {
 					$this->query['wdith'] = 500;
 					break;
 				case 'SubtilisQuickView_xy_LB_genes':
+					// This is for the new quickview on the subtiliswiki
+/*
+					// get the name of the page
+					global $wgTitle;
+					list( $gene_name, $template ) = explode( ':', $wgTitle->getText() );
+					$product_page = $gene_name . ":Gene_Product(s)";
+					$gene_page = $gene_name . ":Gene";
+
+					// look up the coordinates
+					$dbr =& wfGetDB( DB_SLAVE );
+					$arr =array();
+					foreach ($this->rule_fields as $item){
+						switch ($item){
+							case 'protein':
+								$result = $dbr->select('ext_TableEdit_box','box_uid',array("page_name = \"$product_page\"","template = 'Product_phys_prop_table'"),__METHOD__);
+								while ($x = $dbr->fetchObject ( $result )){
+									$box = new wikiBox;
+									$box->box_uid = $x->box_uid;
+									$box->set_from_DB();
+									foreach ($box->rows as $row){
+										$arr[] = explode("||",$row->row_data);
+									}
+
+								}
+								$text = "* ".$arr[0][1]." aa\n";
+								$text .= "* MW:".$arr[0][2]." \n";
+								$text .= "* pI:".$arr[0][3]." \n";
+								break;
+							case 'dna':
+								$result = $dbr->select('ext_TableEdit_box','box_uid',array("page_name = \"$gene_page\"","template = 'Gene_location_table'"),__METHOD__);
+								while ($x = $dbr->fetchObject ( $result )){
+									$box = new wikiBox;
+									$box->box_uid = $x->box_uid;
+									$box->set_from_DB();
+									foreach ($box->rows as $row){
+										$tmp = explode("||",$row->row_data);
+										if($tmp[0] == 'subtilis 168') $arr[] = $tmp;
+									}
+
+								}
+								# need to deal with the possibility of multiple locations
+								foreach($arr as $r){
+									preg_match('/:\s?(\d+)\.\.(\d+)/',$r[2], $coords);
+									#1234567890
+									#
+									if(isset($coords[2]) ){
+										$length = 1+abs($coords[2] - $coords[1]);
+										$text .= "* ".$coords[1]."..".$coords[2]." ($length bp)\n";
+									}
+								}
+
+								break;
+
+						}
+					}
+*/
+
 					$this->query['name'] = $this->name;
 					$this->query['type'] =  'Genes+Rasmussen_xy_LB';
 					$this->query['wdith'] = 500;
@@ -278,7 +336,8 @@ class gbrowseImage {
 		        </a>';
 
 		// for debugging
-		#$html .= '<br />' . htmlentities($this->makeGbrowseImgURL());
+		#$html = '<pre> '.htmlentities($this->input).'</pre><br />'.htmlentities($this->makeGbrowseImgURL()).'<br />'.$html;
+
 
 		$html .= ( isSet($this->caption) && $this->caption )
 			? "\n" . $this->caption
@@ -288,27 +347,6 @@ class gbrowseImage {
 
 		return $html . "\n";
 	}
-	
-	
-	
-	// EcoliWiki's Gbrowse2 doesn't like to have plus-signs (+) in the type paramter in 
-	//   the URL, so let's kludge it by adding multiple "&type="'s. 
-	//
-	// The http_build_query() function will add the first "type=", let's take care of the rest...
-	// 
-	protected function formatTypeParameter() {
-		$tracks = explode( '+', $this->query['type'] );
-		$string = "";
-		for ( $i=0, $c=count($tracks); $i<$c; $i++ ) {
-			if ( $i != 0 ) {
-				$string .= '&type=';
-			}
-			$string .= $tracks[$i];
-		}
-		$this->query['type'] = $string;
-			
-	}
-	
 
 
 	// use like this:    list($chromosome, $coordA, $coordB) = $this->parseLandmark( $landmark );
@@ -323,7 +361,6 @@ class gbrowseImage {
 
 	protected function makeGbrowseImgURL() {
 		$base = self::GBROWSE_IMG . '/' . $this->source;
-		$this->formatTypeParameter();
 		$url = $base . '/?' . http_build_query( $this->query );
 		return urldecode($url);
 	}
