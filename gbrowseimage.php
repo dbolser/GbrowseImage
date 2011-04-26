@@ -1,11 +1,10 @@
 <?php
 
-// We should guard against direct invocation from the web for security
-// reasons
+  // Guard against direct invocation from the web for security reasons
 if ( !defined( 'MEDIAWIKI' ) ) die();
 
 /**
- *
+ * Header go here
  *
  */
 
@@ -13,42 +12,50 @@ if ( !defined( 'MEDIAWIKI' ) ) die();
 
 // Extension configuration settings
 
-$wgGBrowseImageScriptURL =
-  'http://trimer.tamu.edu/cgi-bin/gbrowse_img';
+// The location of the gbrowse_img script
+$wgGbrowseImageScriptURL =
+  'http://heptamer.tamu.edu/cgi-bin/gb2/gbrowse_img';
 
-$wgGBrowseImageGBrowseURL =
-  'http://trimer.tamu.edu/cgi-bin/gbrowse';
+// The location of the acompanying gbrowse
+$wgGbrowseImageGbrowseURL =
+  'http://heptamer.tamu.edu/cgi-bin/gb2/gbrowse';
 
-$wgGBrowseImagePaddingLength = 1000;
+// The default padding (in bases)
+$wgGbrowseImagePaddingLength = 1000;
+
+// The default image size (in px)
+$wgGbrowseImageSize = 300;
+
 
 
 
 // Register the extension details with Special:Version
 
-$wgExtensionCredits['parserhook'][] = array(
-  'path'           => __FILE__,
-  'name'           => "GBrowseImage",
-  'description'    => "Generates GBrowse images from a pre-configured GBrowse instance",
-  'descriptionmsg' => "gbrowseimage-desc",
-  'version'        => 0.2.1,
-  'author'         => array('[mailto:bluecurio@gmail.com Daniel Renfro]', 'Jim Hu', 'Dan Bolser'),
-  'url'            => "http://ecoliwiki.net",
-);
+$wgExtensionCredits['parserhook'][] =
+  array(
+	'path'           => __FILE__,
+	'name'           => "GbrowseImage",
+	'description'    => "Generates Gbrowse images from a pre-configured Gbrowse instance",
+	'descriptionmsg' => "gbrowseimage-desc",
+	'version'        => 0.2.1,
+	'author'         => array('[mailto:bluecurio@gmail.com Daniel Renfro]', 'Jim Hu'),
+	'url'            => "http://ecoliwiki.net",
+	);
 
 
 
 // Three steps to link a specific function with a specific tag...
 
-$wgHooks['ParserFirstCallInit'][] = 'efGBrowseImageInit';
+$wgHooks['ParserFirstCallInit'][] = 'efGbrowseImageInit';
 
-function efGBrowseImageInit( &$parser ) {
-  $parser->setHook( 'gbrowseimage', 'efGBrowseImageRender' );
+function efGbrowseImageInit( &$parser ) {
+  $parser->setHook( 'gbrowseimage', 'efGbrowseImageRender' );
   return true;
 }
 
-function efGBrowseImageRender( $input, $args, $parser, $frame ) {
+function efGbrowseImageRender( $input, $args, $parser, $frame ) {
   $gbi = new gbrowseImage( $input, $args, $parser, $frame );
-  return $g->makeLink();
+  return $gbi->makeLink();
 }
 
 
