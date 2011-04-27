@@ -80,6 +80,11 @@ class gbrowseImage {
       ? $this->gbArgs['type']
       : "Genes+Genes:region+ncRNA+ncRNA:region";
     
+
+
+
+    // USE htmlspecialchars() HERE!
+
      // make the HTML
     $html = '<a href="' . $this->makeGbrowseURL() . '" target="_blank">
 		            <img src="' . $this->makeGbrowseImgURL() . '" alt="' . $this->makeGbrowseURL() . '" />
