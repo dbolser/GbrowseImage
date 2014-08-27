@@ -42,7 +42,7 @@ function efGbrowseImageSetup() {
 }
 
 // have to wrap the object in a function to get MW to execute it properly.
-function efGbrowseImageRender( $input, $args, &$parser, $frame = null ) {
+function efGbrowseImageRender( $input, $args, $parser, $frame = null ) {
 	$g = new gbrowseImage($input, $args, $parser, $frame ) ;
 	return $g->makeLink();
 }
